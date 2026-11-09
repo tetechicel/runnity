@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Runnity — Find Your Running Community</title>
+ 
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Manrope:wght@700;800&display=swap" rel="stylesheet" />
+ 
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: { DEFAULT: '#ff7043', dark: '#f4511e', tint: '#fff1ec', soft: '#ff9a76' },
+            ink: { DEFAULT: '#242424', soft: '#5b5b5b' },
+            paper: '#f8f7f4',
+            line: '#ebe9e4',
+            muted: '#8b8b8b',
+          },
+          fontFamily: {
+            sans: ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+            display: ['Manrope', 'Inter', 'sans-serif'],
+          },
+          boxShadow: {
+            glow: '0 8px 10px rgba(255,112,67,0.7)',
+          },
+        },
+      },
+    };
+  </script>
+  <style type="text/tailwindcss">
+    @layer components {
+      .eyebrow { @apply text-xs font-bold uppercase tracking-[0.16em] text-brand; }
+      .h2 { @apply font-display text-3xl sm:text-4xl font-extrabold leading-[1.1] tracking-[-0.02em]; }
+      .btn { @apply inline-flex items-center justify-center gap-2 rounded-full font-semibold whitespace-nowrap transition; }
+      .btn-lg { @apply h-[52px] px-7 text-base; }
+      .btn-sm { @apply h-9 px-4 text-sm; }
+      .btn-primary { @apply bg-brand text-white shadow-[0_8px_10px_-4px_rgba(255,112,67,0.7)] hover:bg-brand-dark; }
+      .btn-dark { @apply bg-ink text-white hover:bg-black; }
+      .btn-outline { @apply bg-white text-ink border border-line hover:border-ink/30; }
+      .section-link { @apply inline-flex items-center gap-1.5 text-sm font-bold text-ink hover:text-brand transition; }
+      .countdown-cell { @apply flex flex-col items-center rounded-2xl py-2; }
+    }
+  </style>
+</head>
+ 
+<body class="bg-paper font-sans text-ink antialiased">
+ 
+  <!-- ============ SVG SPRITE ============ -->
+  <svg xmlns="http://www.w3.org/2000/svg" class="hidden" aria-hidden="true">
+    <symbol id="i-logo" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 5c4 0 5 3 5 6s1 5 5 6"/><path d="M5 12h3"/><path d="M16 12h3"/></symbol>
+    <symbol id="i-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></symbol>
+    <symbol id="i-pin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></symbol>
+    <symbol id="i-users" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></symbol>
+    <symbol id="i-user" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M19 8v6"/><path d="M22 11h-6"/></symbol>
+    <symbol id="i-ticket" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9a3 3 0 0 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 0 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"/><path d="M13 5v2"/><path d="M13 17v2"/><path d="M13 11v2"/></symbol>
+    <symbol id="i-flame" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></symbol>
+    <symbol id="i-compass" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></symbol>
+    <symbol id="i-calendar" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/><path d="m9 16 2 2 4-4"/></symbol>
+    <symbol id="i-quote" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2 1 1 0 0 1 1 1v1a2 2 0 0 1-2 2 1 1 0 0 0-1 1v2a1 1 0 0 0 1 1 6 6 0 0 0 6-6V5a2 2 0 0 0-2-2z"/><path d="M5 3a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2 1 1 0 0 1 1 1v1a2 2 0 0 1-2 2 1 1 0 0 0-1 1v2a1 1 0 0 0 1 1 6 6 0 0 0 6-6V5a2 2 0 0 0-2-2z"/></symbol>
+    <symbol id="i-star" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></symbol>
+  </svg>
+ 
+  <!-- ============ NAVBAR ============ -->
+  <header class="sticky top-0 z-50 border-b border-transparent bg-paper/90 backdrop-blur">
+    <nav class="mx-auto flex h-[72px] max-w-[1280px] items-center justify-between px-8">
+      <a href="#" class="flex items-center gap-2.5">
+        <span class="grid size-9 place-items-center rounded-xl bg-brand text-white">
+          <svg class="size-5"><use href="#i-logo" /></svg>
+        </span>
+        <span class="font-display text-xl font-extrabold tracking-[-0.025em]">Runnity</span>
+      </a>
+ 
+      <div class="hidden items-center gap-1 md:flex">
+        <a href="#" class="rounded-full bg-ink px-4 py-2 text-sm font-semibold text-white">Home</a>
+        <a href="#communities" class="rounded-full px-4 py-2 text-sm font-semibold text-ink/70 transition hover:text-ink">Communities</a>
+        <a href="#events" class="rounded-full px-4 py-2 text-sm font-semibold text-ink/70 transition hover:text-ink">Events</a>
+      </div>
+ 
+      <div class="flex items-center gap-2">
+        <a href="#" class="rounded-full px-4 py-2 text-sm font-semibold text-ink transition hover:text-brand">Login</a>
+        <a href="#" class="btn btn-sm btn-primary">Get Started</a>
+      </div>
+    </nav>
+  </header>
+ 
+  <main>
+ 
+    <!-- ============ HERO ============ -->
+    <section>
+      <div class="mx-auto grid max-w-[1280px] items-center gap-12 px-8 pb-24 pt-14 lg:grid-cols-[1.05fr_1fr] lg:pb-28">
+        <!-- left -->
+        <div>
+          <div class="inline-flex items-center gap-1 rounded-full bg-brand-tint py-1.5 pl-1.5 pr-3">
+            <span class="rounded-full bg-brand px-2 py-0.5 text-[10px] font-semibold text-white">NEW</span>
+            <span class="text-xs font-semibold text-brand-dark">Register for events right inside Runnity</span>
+          </div>
+ 
+          <h1 class="mt-7 font-display text-[56px] font-extrabold leading-[0.95] tracking-[-0.04em] sm:text-7xl lg:text-[84px]">
+            Find Your Running Community<span class="text-brand">.</span>
+          </h1>
+ 
+          <p class="mt-6 max-w-[512px] text-lg leading-[1.625] text-ink/65">
+            Discover running communities, join exciting events, and build your running consistency with Runnity.
+          </p>
+ 
+          <div class="mt-9 flex flex-wrap gap-3">
+            <a href="#" class="btn btn-lg btn-primary">Get Started <svg class="size-4"><use href="#i-arrow" /></svg></a>
+            <a href="#communities" class="btn btn-lg btn-dark">Explore Communities</a>
+            <a href="#events" class="btn btn-lg btn-outline">Explore Events</a>
+          </div>
+ 
+          <div class="mt-10 flex items-center gap-4">
+            <div class="flex">
+              <span class="-mr-2.5 grid size-10 place-items-center rounded-full border-[1.6px] border-paper bg-brand font-display text-xs font-bold text-white">PA</span>
+              <span class="-mr-2.5 grid size-10 place-items-center rounded-full border-[1.6px] border-paper bg-ink font-display text-xs font-bold text-white">DS</span>
+              <span class="-mr-2.5 grid size-10 place-items-center rounded-full border-[1.6px] border-paper bg-brand-soft font-display text-xs font-bold text-white">AL</span>
+              <span class="grid size-10 place-items-center rounded-full border-[1.6px] border-paper bg-ink-soft font-display text-xs font-bold text-white">BW</span>
+            </div>
+            <div>
+              <div class="flex items-center gap-2">
+                <span class="stars" data-rating="4.5" data-size="14"></span>
+                <span class="text-sm font-bold">4.5</span>
+              </div>
+              <p class="text-sm text-muted">Rated by 12 runners</p>
+            </div>
+          </div>
+        </div>
+ 
+        <!-- right -->
+        <div class="relative mx-auto w-full max-w-[570px] lg:mx-0">
+          <div class="relative h-[520px] overflow-hidden rounded-[36px] bg-gradient-to-b from-[#0a6fd8] to-[#0b2a4a] sm:h-[620px] lg:h-[712px]">
+            <img src="assets/img/hero.png" alt="Three runners silhouetted on an open road" class="absolute inset-0 size-full object-cover" onerror="this.style.display='none'" />
+            <div class="absolute inset-0 bg-gradient-to-t from-ink/70 via-transparent via-50% to-transparent"></div>
+            <div class="absolute inset-x-6 bottom-6">
+              <p class="text-xs font-semibold uppercase tracking-[0.1em] text-white/70">Running together in</p>
+              <p class="mt-1 font-display text-xl font-bold leading-7 text-white">Bandung · Bekasi · Bogor · Jakarta · Surabaya · Yogyakarta</p>
+            </div>
+          </div>
+ 
+          <!-- next event card -->
+          <a href="#events" class="absolute -top-4 left-4 w-64 rounded-3xl border border-line bg-white p-4 shadow-[0_24px_25px_-12px_rgba(0,0,0,0.35)] lg:-left-8">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold uppercase tracking-[0.05em] text-brand">Next event</span>
+              <svg class="size-4 text-ink/60"><use href="#i-ticket" /></svg>
+            </div>
+            <p class="mt-1 font-display text-base font-bold">Bogor Morning Run</p>
+            <div class="mt-3 grid grid-cols-4 gap-1.5">
+              <div class="countdown-cell bg-paper"><span class="font-display text-lg font-extrabold leading-7" data-cd="d">09</span><span class="text-[10px] font-semibold uppercase tracking-[0.05em] text-muted">Days</span></div>
+              <div class="countdown-cell bg-paper"><span class="font-display text-lg font-extrabold leading-7" data-cd="h">21</span><span class="text-[10px] font-semibold uppercase tracking-[0.05em] text-muted">Hours</span></div>
+              <div class="countdown-cell bg-paper"><span class="font-display text-lg font-extrabold leading-7" data-cd="m">08</span><span class="text-[10px] font-semibold uppercase tracking-[0.05em] text-muted">Min</span></div>
+              <div class="countdown-cell bg-paper"><span class="font-display text-lg font-extrabold leading-7" data-cd="s">34</span><span class="text-[10px] font-semibold uppercase tracking-[0.05em] text-muted">Sec</span></div>
+            </div>
+          </a>
+ 
+          <!-- streak chip -->
+          <div class="absolute -right-3 bottom-28 flex items-center gap-3 rounded-2xl bg-ink py-3 pl-3 pr-5 shadow-[0_20px_12px_-8px_rgba(0,0,0,0.25)] lg:-right-6">
+            <span class="grid size-10 place-items-center rounded-xl bg-brand text-white"><svg class="size-5"><use href="#i-flame" /></svg></span>
+            <div>
+              <p class="font-display text-lg font-extrabold leading-[18px] text-white">5-day</p>
+              <p class="mt-0.5 text-xs text-white/60">training streak</p>
+            </div>
+          </div>
+        </div>
+      </div>
+ 
+      <!-- stats -->
+      <div class="mx-auto max-w-[1280px] px-8">
+        <div class="grid grid-cols-2 gap-px overflow-hidden rounded-3xl border border-line bg-line lg:grid-cols-4">
+          <div class="bg-white p-6"><p class="font-display text-[30px] font-extrabold leading-9">7</p><p class="mt-1 text-sm text-muted">Running communities</p></div>
+          <div class="bg-white p-6"><p class="font-display text-[30px] font-extrabold leading-9">6</p><p class="mt-1 text-sm text-muted">Indonesian cities</p></div>
+          <div class="bg-white p-6"><p class="font-display text-[30px] font-extrabold leading-9">5</p><p class="mt-1 text-sm text-muted">Upcoming events</p></div>
+          <div class="bg-white p-6"><p class="font-display text-[30px] font-extrabold leading-9">4.5</p><p class="mt-1 text-sm text-muted">Average website rating</p></div>
+        </div>
+      </div>
+    </section>
+ 
+    <!-- ============ FEATURED COMMUNITIES ============ -->
+    <section id="communities" class="mx-auto max-w-[1280px] px-8 py-24">
+      <div class="flex flex-wrap items-end justify-between gap-4">
+        <div class="max-w-[576px]">
+          <p class="eyebrow">Featured communities</p>
+          <h2 class="h2 mt-3">Run with people who get it.</h2>
+          <p class="mt-3 text-base leading-6 text-muted">From sunrise heritage runs in Yogyakarta to hill repeats in Bandung — there's a crew for every pace.</p>
+        </div>
+        <a href="#" class="section-link">View all communities <svg class="size-4"><use href="#i-arrow" /></svg></a>
+      </div>
+ 
+      <div class="mt-10 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        <!-- card -->
+        <article class="group flex flex-col overflow-hidden rounded-3xl border border-line bg-white transition hover:-translate-y-1 hover:shadow-xl">
+          <div class="relative h-[242px] bg-gradient-to-br from-stone-300 to-stone-500">
+            <img src="assets/img/community-jakarta.png" alt="Runners at a road race in Jakarta" class="absolute inset-0 size-full object-cover" onerror="this.style.display='none'" />
+            <span class="absolute left-3 top-3 inline-flex items-center gap-1 rounded-full bg-white/90 px-2.5 py-1 text-xs font-semibold backdrop-blur"><svg class="size-3"><use href="#i-pin" /></svg>Jakarta</span>
+          </div>
+          <div class="flex flex-1 flex-col p-5">
+            <p class="text-xs font-bold uppercase tracking-[0.05em] text-brand">Road Running</p>
+            <h3 class="mt-1.5 font-display text-lg font-bold leading-7 tracking-[-0.02em]">Jakarta Running Club</h3>
+            <p class="mt-2 text-sm leading-[22.75px] text-muted">Weekday tempo sessions and weekend long runs around the Senayan sports complex.</p>
+            <div class="mt-auto flex items-center justify-between pt-5">
+              <span class="inline-flex items-center gap-1.5 text-xs font-medium text-ink/60"><svg class="size-3.5"><use href="#i-users" /></svg>1.240 members</span>
+              <a href="communitiesDetailBeforeLogin.html" class="btn btn-sm btn-outline">View Details <svg class="size-3.5"><use href="#i-arrow" /></svg></a>
+            </div>
+          </div>
+        </article>
+ 
+        <article class="group flex flex-col overflow-hidden rounded-3xl border border-line bg-white transition hover:-translate-y-1 hover:shadow-xl">
+          <div class="relative h-[242px] bg-gradient-to-br from-emerald-900 to-neutral-900">
+            <img src="assets/img/community-bogor.png" alt="A lone runner on a forest trail in Bogor" class="absolute inset-0 size-full object-cover" onerror="this.style.display='none'" />
+            <span class="absolute left-3 top-3 inline-flex items-center gap-1 rounded-full bg-white/90 px-2.5 py-1 text-xs font-semibold backdrop-blur"><svg class="size-3"><use href="#i-pin" /></svg>Bogor</span>
+          </div>
+          <div class="flex flex-1 flex-col p-5">
+            <p class="text-xs font-bold uppercase tracking-[0.05em] text-brand">Trail &amp; Nature</p>
+            <h3 class="mt-1.5 font-display text-lg font-bold leading-7 tracking-[-0.02em]">Bogor Runners</h3>
+            <p class="mt-2 text-sm leading-[22.75px] text-muted">Cool-morning runs through Kebun Raya and weekend trails at the foot of Mount Salak.</p>
+            <div class="mt-auto flex items-center justify-between pt-5">
+              <span class="inline-flex items-center gap-1.5 text-xs font-medium text-ink/60"><svg class="size-3.5"><use href="#i-users" /></svg>680 members</span>
+              <a href="communitiesDetailBeforeLogin.html" class="btn btn-sm btn-outline">View Details <svg class="size-3.5"><use href="#i-arrow" /></svg></a>
+            </div>
+          </div>
+        </article>
+ 
+        <article class="group flex flex-col overflow-hidden rounded-3xl border border-line bg-white transition hover:-translate-y-1 hover:shadow-xl md:col-span-2 lg:col-span-1">
+          <div class="relative h-[242px] bg-gradient-to-br from-amber-400 to-stone-700">
+            <img src="assets/img/community-bekasi.png" alt="Runners at sunset in Bekasi" class="absolute inset-0 size-full object-cover" onerror="this.style.display='none'" />
+            <span class="absolute left-3 top-3 inline-flex items-center gap-1 rounded-full bg-white/90 px-2.5 py-1 text-xs font-semibold backdrop-blur"><svg class="size-3"><use href="#i-pin" /></svg>Bekasi</span>
+          </div>
+          <div class="flex flex-1 flex-col p-5">
+            <p class="text-xs font-bold uppercase tracking-[0.05em] text-brand">Social Run</p>
+            <h3 class="mt-1.5 font-display text-lg font-bold leading-7 tracking-[-0.02em]">Bekasi Run Together</h3>
+            <p class="mt-2 text-sm leading-[22.75px] text-muted">A no-pressure social running group for commuters who want to start running together.</p>
+            <div class="mt-auto flex items-center justify-between pt-5">
+              <span class="inline-flex items-center gap-1.5 text-xs font-medium text-ink/60"><svg class="size-3.5"><use href="#i-users" /></svg>520 members</span>
+              <a href="communitiesDetailBeforeLogin.html" class="btn btn-sm btn-outline">View Details <svg class="size-3.5"><use href="#i-arrow" /></svg></a>
+            </div>
+          </div>
+        </article>
+      </div>
+    </section>
+ 
+    <!-- ============ UPCOMING EVENTS ============ -->
+    <section id="events" class="bg-white">
+      <div class="mx-auto max-w-[1280px] px-8 py-24">
+        <div class="flex flex-wrap items-end justify-between gap-4">
+          <div>
+            <p class="eyebrow">Upcoming events</p>
+            <h2 class="h2 mt-3">Your next start line.</h2>
+          </div>
+          <a href="eventsBeforeLogin.html" class="section-link">View all events <svg class="size-4"><use href="#i-arrow" /></svg></a>
+        </div>
+ 
+        <div class="mt-10 grid gap-6 lg:grid-cols-[1.15fr_1fr]">
+          <!-- featured -->
+          <a href="eventsDetailBeforeLogin.html" class="relative flex min-h-[420px] flex-col justify-end overflow-hidden rounded-[32px] bg-gradient-to-br from-stone-500 to-ink p-7">
+            <img src="assets/img/event-featured.png" alt="Runners at the start of a race" class="absolute inset-0 size-full object-cover" onerror="this.style.display='none'" />
+            <div class="absolute inset-0 bg-gradient-to-t from-ink via-ink/40 via-50% to-transparent"></div>
+            <div class="relative">
+              <span class="mb-4 inline-flex rounded-full bg-brand-tint px-2.5 py-1 text-xs font-semibold text-brand-dark">Featured</span>
+              <h3 class="font-display text-[30px] font-extrabold leading-9 tracking-[-0.02em] text-white">Bogor Morning Run</h3>
+              <p class="mt-2 flex items-center gap-1.5 text-sm text-white/75"><svg class="size-4"><use href="#i-pin" /></svg>Jl. Ir. H. Juanda No.13, Bogor · Saturday, 14 November 2026</p>
+              <div class="mt-6 grid max-w-[384px] grid-cols-4 gap-1.5 text-center">
+                <div class="countdown-cell bg-white/[0.12] backdrop-blur"><span class="font-display text-lg font-extrabold leading-7 text-white" data-cd="d">09</span><span class="text-[10px] font-semibold uppercase tracking-[0.05em] text-white/70">Days</span></div>
+                <div class="countdown-cell bg-white/[0.12] backdrop-blur"><span class="font-display text-lg font-extrabold leading-7 text-white" data-cd="h">21</span><span class="text-[10px] font-semibold uppercase tracking-[0.05em] text-white/70">Hours</span></div>
+                <div class="countdown-cell bg-white/[0.12] backdrop-blur"><span class="font-display text-lg font-extrabold leading-7 text-white" data-cd="m">08</span><span class="text-[10px] font-semibold uppercase tracking-[0.05em] text-white/70">Min</span></div>
+                <div class="countdown-cell bg-white/[0.12] backdrop-blur"><span class="font-display text-lg font-extrabold leading-7 text-white" data-cd="s">34</span><span class="text-[10px] font-semibold uppercase tracking-[0.05em] text-white/70">Sec</span></div>
+              </div>
+            </div>
+          </a>
+ 
+          <!-- list -->
+          <div class="flex flex-col gap-3">
+            <div class="flex items-center gap-4 rounded-3xl border border-line bg-paper py-3 pl-3 pr-4">
+              <div class="flex w-14 shrink-0 flex-col items-center rounded-2xl bg-white py-2"><span class="text-[10px] font-bold uppercase leading-[15px] tracking-[0.1em] text-brand">Nov</span><span class="font-display text-2xl font-extrabold leading-6">21</span><span class="mt-0.5 text-[10px] font-medium leading-[15px] text-muted">Sat</span></div>
+              <div class="min-w-0 flex-1">
+                <p class="truncate font-display text-base font-bold leading-6">Bekasi Fun Run</p>
+                <p class="text-sm leading-5 text-muted">Bekasi · 06:00</p>
+                <span class="mt-1.5 inline-flex items-center gap-1 rounded-full bg-brand-tint px-2.5 py-1 text-xs font-semibold text-brand-dark"><span class="size-1.5 rounded-full bg-brand"></span>16d 21h left</span>
+              </div>
+              <a href="eventsDetailBeforeLogin.html" class="btn btn-sm btn-outline">View Event</a>
+            </div>
+ 
+            <div class="flex items-center gap-4 rounded-3xl border border-line bg-paper py-3 pl-3 pr-4">
+              <div class="flex w-14 shrink-0 flex-col items-center rounded-2xl bg-white py-2"><span class="text-[10px] font-bold uppercase leading-[15px] tracking-[0.1em] text-brand">Nov</span><span class="font-display text-2xl font-extrabold leading-6">28</span><span class="mt-0.5 text-[10px] font-medium leading-[15px] text-muted">Sat</span></div>
+              <div class="min-w-0 flex-1">
+                <p class="truncate font-display text-base font-bold leading-6">Jakarta City Run</p>
+                <p class="text-sm leading-5 text-muted">Jakarta · 05:00</p>
+                <span class="mt-1.5 inline-flex items-center gap-1 rounded-full bg-brand-tint px-2.5 py-1 text-xs font-semibold text-brand-dark"><span class="size-1.5 rounded-full bg-brand"></span>23d 20h left</span>
+              </div>
+              <a href="eventsDetailBeforeLogin.html" class="btn btn-sm btn-outline">View Event</a>
+            </div>
+ 
+            <div class="flex items-center gap-4 rounded-3xl border border-line bg-paper py-3 pl-3 pr-4">
+              <div class="flex w-14 shrink-0 flex-col items-center rounded-2xl bg-white py-2"><span class="text-[10px] font-bold uppercase leading-[15px] tracking-[0.1em] text-brand">Dec</span><span class="font-display text-2xl font-extrabold leading-6">12</span><span class="mt-0.5 text-[10px] font-medium leading-[15px] text-muted">Sat</span></div>
+              <div class="min-w-0 flex-1">
+                <p class="truncate font-display text-base font-bold leading-6">Bandung Night Run</p>
+                <p class="text-sm leading-5 text-muted">Bandung · 19:00</p>
+                <span class="mt-1.5 inline-flex items-center gap-1 rounded-full bg-brand-tint px-2.5 py-1 text-xs font-semibold text-brand-dark"><span class="size-1.5 rounded-full bg-brand"></span>38d 10h left</span>
+              </div>
+              <a href="eventsDetailBeforeLogin.html" class="btn btn-sm btn-outline">View Event</a>
+            </div>
+ 
+            <div class="flex items-center gap-4 rounded-3xl border border-line bg-paper py-3 pl-3 pr-4">
+              <div class="flex w-14 shrink-0 flex-col items-center rounded-2xl bg-white py-2"><span class="text-[10px] font-bold uppercase leading-[15px] tracking-[0.1em] text-brand">Jan</span><span class="font-display text-2xl font-extrabold leading-6">3</span><span class="mt-0.5 text-[10px] font-medium leading-[15px] text-muted">Sun</span></div>
+              <div class="min-w-0 flex-1">
+                <p class="truncate font-display text-base font-bold leading-6">Yogyakarta Running Festival</p>
+                <p class="text-sm leading-5 text-muted">Yogyakarta · 05:00</p>
+                <span class="mt-1.5 inline-flex items-center gap-1 rounded-full bg-brand-tint px-2.5 py-1 text-xs font-semibold text-brand-dark"><span class="size-1.5 rounded-full bg-brand"></span>59d 20h left</span>
+              </div>
+              <a href="eventsDetailBeforeLogin.html" class="btn btn-sm btn-outline">View Event</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+ 
+    <!-- ============ ABOUT ============ -->
+    <section class="mx-auto grid max-w-[1280px] items-center gap-12 px-8 py-24 lg:grid-cols-2">
+      <div class="relative">
+        <div class="relative h-[360px] overflow-hidden rounded-[32px] bg-gradient-to-br from-sky-300 to-stone-500 sm:h-[467px]">
+          <img src="assets/img/about.png" alt="Runners stretching together before a group run" class="absolute inset-0 size-full object-cover" onerror="this.style.display='none'" />
+        </div>
+        <div class="absolute -bottom-6 left-10 rounded-2xl bg-brand p-5 shadow-[0_20px_12px_-8px_rgba(0,0,0,0.25)]">
+          <p class="font-display text-[30px] font-extrabold leading-9 text-white">5,000+</p>
+          <p class="text-sm text-white/85">runners in our communities</p>
+        </div>
+      </div>
+ 
+      <div>
+        <p class="eyebrow">About Runnity</p>
+        <h2 class="h2 mt-3">Built for every kind of runner.</h2>
+        <p class="mt-4 text-base leading-[26px] text-ink/65">Runnity started with a simple question: why is it so hard to find people to run with? We bring Indonesia's running clubs, events and your own training plan into one place — so you spend less time searching and more time running.</p>
+ 
+        <ol class="mt-8 space-y-4">
+          <li class="flex gap-4">
+            <span class="grid size-9 shrink-0 place-items-center rounded-full bg-ink font-display text-sm font-bold text-white">1</span>
+            <div><p class="font-display text-base font-bold leading-6">Beginner runners</p><p class="text-sm leading-5 text-muted">Find beginner-friendly groups and plan your first 3K with confidence.</p></div>
+          </li>
+          <li class="flex gap-4">
+            <span class="grid size-9 shrink-0 place-items-center rounded-full bg-ink font-display text-sm font-bold text-white">2</span>
+            <div><p class="font-display text-base font-bold leading-6">Casual runners</p><p class="text-sm leading-5 text-muted">Join social runs and fun events that fit around work and family.</p></div>
+          </li>
+          <li class="flex gap-4">
+            <span class="grid size-9 shrink-0 place-items-center rounded-full bg-ink font-display text-sm font-bold text-white">3</span>
+            <div><p class="font-display text-base font-bold leading-6">Experienced runners</p><p class="text-sm leading-5 text-muted">Track consistency, chase streaks and sign up for your next race.</p></div>
+          </li>
+        </ol>
+      </div>
+    </section>
+ 
+    <!-- ============ WHY RUNNITY ============ -->
+    <section class="bg-ink">
+      <div class="mx-auto max-w-[1280px] px-8 py-24">
+        <div class="max-w-[576px]">
+          <p class="eyebrow">Why Runnity</p>
+          <h2 class="h2 mt-3 text-white">Everything you need to keep showing up.</h2>
+        </div>
+ 
+        <div class="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <div class="rounded-3xl border border-white/10 bg-white/[0.04] p-6">
+            <span class="grid size-12 place-items-center rounded-2xl bg-brand text-white"><svg class="size-5"><use href="#i-compass" /></svg></span>
+            <h3 class="mt-6 font-display text-lg font-bold leading-7 tracking-[-0.02em] text-white">Discover by city</h3>
+            <p class="mt-2 text-sm leading-[22.75px] text-white/60">Search and filter communities across Indonesian cities in seconds.</p>
+          </div>
+          <div class="rounded-3xl border border-white/10 bg-white/[0.04] p-6">
+            <span class="grid size-12 place-items-center rounded-2xl bg-brand text-white"><svg class="size-5"><use href="#i-ticket" /></svg></span>
+            <h3 class="mt-6 font-display text-lg font-bold leading-7 tracking-[-0.02em] text-white">Register in-app</h3>
+            <p class="mt-2 text-sm leading-[22.75px] text-white/60">Sign up for events directly in Runnity — no hopping between websites.</p>
+          </div>
+          <div class="rounded-3xl border border-white/10 bg-white/[0.04] p-6">
+            <span class="grid size-12 place-items-center rounded-2xl bg-brand text-white"><svg class="size-5"><use href="#i-calendar" /></svg></span>
+            <h3 class="mt-6 font-display text-lg font-bold leading-7 tracking-[-0.02em] text-white">Plan your training</h3>
+            <p class="mt-2 text-sm leading-[22.75px] text-white/60">Create, edit and complete training sessions in a simple schedule.</p>
+          </div>
+          <div class="rounded-3xl border border-white/10 bg-white/[0.04] p-6">
+            <span class="grid size-12 place-items-center rounded-2xl bg-brand text-white"><svg class="size-5"><use href="#i-flame" /></svg></span>
+            <h3 class="mt-6 font-display text-lg font-bold leading-7 tracking-[-0.02em] text-white">Build your streak</h3>
+            <p class="mt-2 text-sm leading-[22.75px] text-white/60">Mark sessions complete and watch your running streak grow.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+ 
+    <!-- ============ TESTIMONIALS ============ -->
+    <section class="mx-auto max-w-[1280px] px-8 py-24">
+      <p class="eyebrow">What runners say</p>
+      <h2 class="h2 mt-3">Loved by our community.</h2>
+ 
+      <div class="mt-10 grid gap-6 lg:grid-cols-[360px_1fr]">
+        <!-- rating summary -->
+        <div class="rounded-[32px] border border-line bg-white p-7">
+          <p class="font-display text-[60px] font-extrabold leading-[60px]">4.5</p>
+          <div class="mt-2"><span class="stars" data-rating="4.5" data-size="24"></span></div>
+          <p class="mt-2 text-sm text-muted">Based on 12 ratings</p>
+ 
+          <div class="mt-6 space-y-2" id="rating-bars">
+            <div class="flex items-center gap-3"><span class="flex w-6 items-center gap-0.5 text-sm font-semibold">5<svg class="size-3 text-brand"><use href="#i-star" /></svg></span><div class="h-2 flex-1 overflow-hidden rounded-full bg-paper"><div class="h-full rounded-full bg-brand" style="width:58.33%"></div></div><span class="w-6 text-right text-sm text-muted">7</span></div>
+            <div class="flex items-center gap-3"><span class="flex w-6 items-center gap-0.5 text-sm font-semibold">4<svg class="size-3 text-brand"><use href="#i-star" /></svg></span><div class="h-2 flex-1 overflow-hidden rounded-full bg-paper"><div class="h-full rounded-full bg-brand" style="width:33.33%"></div></div><span class="w-6 text-right text-sm text-muted">4</span></div>
+            <div class="flex items-center gap-3"><span class="flex w-6 items-center gap-0.5 text-sm font-semibold">3<svg class="size-3 text-brand"><use href="#i-star" /></svg></span><div class="h-2 flex-1 overflow-hidden rounded-full bg-paper"><div class="h-full rounded-full bg-brand" style="width:8.33%"></div></div><span class="w-6 text-right text-sm text-muted">1</span></div>
+            <div class="flex items-center gap-3"><span class="flex w-6 items-center gap-0.5 text-sm font-semibold">2<svg class="size-3 text-brand"><use href="#i-star" /></svg></span><div class="h-2 flex-1 overflow-hidden rounded-full bg-paper"><div class="h-full rounded-full bg-brand" style="width:0%"></div></div><span class="w-6 text-right text-sm text-muted">0</span></div>
+            <div class="flex items-center gap-3"><span class="flex w-6 items-center gap-0.5 text-sm font-semibold">1<svg class="size-3 text-brand"><use href="#i-star" /></svg></span><div class="h-2 flex-1 overflow-hidden rounded-full bg-paper"><div class="h-full rounded-full bg-brand" style="width:0%"></div></div><span class="w-6 text-right text-sm text-muted">0</span></div>
+          </div>
+ 
+          <a href="#" class="btn btn-primary mt-7 h-11 w-full px-5 text-sm"><svg class="size-4"><use href="#i-star" /></svg>Rate Runnity</a>
+          <p class="mt-3 text-center text-xs text-muted">You'll be asked to log in first.</p>
+        </div>
+ 
+        <!-- quotes -->
+        <div class="grid gap-4 md:grid-cols-3">
+          <figure class="flex flex-col rounded-[32px] border border-line bg-white p-6">
+            <svg class="size-6 text-brand"><use href="#i-quote" /></svg>
+            <blockquote class="mt-4 flex-1 text-base leading-[26px] text-ink/80">Found my running group in Bogor within a day. The event registration is super smooth!</blockquote>
+            <figcaption class="mt-6 flex items-center justify-between border-t border-line pt-4"><span class="text-sm font-bold">Putri Anggraini</span><span class="stars" data-rating="5" data-size="14"></span></figcaption>
+          </figure>
+          <figure class="flex flex-col rounded-[32px] border border-line bg-white p-6">
+            <svg class="size-6 text-brand"><use href="#i-quote" /></svg>
+            <blockquote class="mt-4 flex-1 text-base leading-[26px] text-ink/80">The streak feature keeps me honest. Five weeks in and still going.</blockquote>
+            <figcaption class="mt-6 flex items-center justify-between border-t border-line pt-4"><span class="text-sm font-bold">Dimas Saputra</span><span class="stars" data-rating="5" data-size="14"></span></figcaption>
+          </figure>
+          <figure class="flex flex-col rounded-[32px] border border-line bg-white p-6">
+            <svg class="size-6 text-brand"><use href="#i-quote" /></svg>
+            <blockquote class="mt-4 flex-1 text-base leading-[26px] text-ink/80">Clean and easy to use. Would love more communities in Bali.</blockquote>
+            <figcaption class="mt-6 flex items-center justify-between border-t border-line pt-4"><span class="text-sm font-bold">Ayu Lestari</span><span class="stars" data-rating="4" data-size="14"></span></figcaption>
+          </figure>
+        </div>
+      </div>
+    </section>
+ 
+    <!-- ============ CTA ============ -->
+    <section class="mx-auto max-w-[1280px] px-8 pb-24">
+      <div class="relative overflow-hidden rounded-[36px] bg-brand">
+        <img src="assets/img/cta.png" alt="" class="absolute inset-0 size-full object-cover opacity-20" onerror="this.style.display='none'" />
+        <div class="relative flex flex-col items-start justify-between gap-8 px-8 py-14 md:flex-row md:items-center md:px-14">
+          <div class="max-w-[576px]">
+            <h2 class="font-display text-4xl font-extrabold leading-none tracking-[-0.02em] text-white md:text-5xl">Ready for your next run?</h2>
+            <p class="mt-3 text-base leading-6 text-white/85">Create a free account to register for events, plan your training and build your streak.</p>
+          </div>
+          <div class="flex flex-wrap gap-3">
+            <a href="#" class="btn btn-lg btn-dark">Get Started <svg class="size-4"><use href="#i-arrow" /></svg></a>
+            <a href="#" class="btn btn-lg bg-white text-ink hover:bg-paper"><svg class="size-4"><use href="#i-users" /></svg>Login</a>
+          </div>
+        </div>
+      </div>
+    </section>
+ 
+  </main>
+ 
+  <!-- ============ FOOTER ============ -->
+  <footer class="bg-ink">
+    <div class="mx-auto grid max-w-[1280px] gap-10 px-8 py-14 sm:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr_1fr]">
+      <div>
+        <a href="#" class="flex items-center gap-2.5">
+          <span class="grid size-9 place-items-center rounded-xl bg-brand text-white"><svg class="size-5"><use href="#i-logo" /></svg></span>
+          <span class="font-display text-xl font-extrabold tracking-[-0.025em] text-white">Runnity</span>
+        </a>
+        <p class="mt-4 max-w-[320px] text-sm leading-[22.75px] text-white/60">The home of Indonesia's running communities. Discover clubs, join events and build a habit that sticks.</p>
+      </div>
+      <div>
+        <p class="font-display text-sm font-bold text-white">Explore</p>
+        <ul class="mt-3 space-y-3 text-sm text-white/60">
+          <li><a href="#communities" class="transition hover:text-white">Communities</a></li>
+          <li><a href="#events" class="transition hover:text-white">Events</a></li>
+          <li><a href="#" class="transition hover:text-white">Home</a></li>
+        </ul>
+      </div>
+      <div>
+        <p class="font-display text-sm font-bold text-white">Account</p>
+        <ul class="mt-3 space-y-3 text-sm text-white/60">
+          <li><a href="#" class="transition hover:text-white">Login</a></li>
+          <li><a href="#" class="transition hover:text-white">Create account</a></li>
+          <li><a href="#" class="transition hover:text-white">Forgot password</a></li>
+        </ul>
+      </div>
+      <div>
+        <p class="font-display text-sm font-bold text-white">Feedback</p>
+        <ul class="mt-3 space-y-3 text-sm">
+          <li><a href="#" class="text-white/60 transition hover:text-white">Rate Runnity</a></li>
+          <li class="text-white/40">Jakarta, Indonesia</li>
+        </ul>
+      </div>
+    </div>
+    <div class="border-t border-white/10">
+      <div class="mx-auto flex max-w-[1280px] flex-col justify-between gap-2 px-8 py-6 text-xs text-white/40 sm:flex-row">
+        <p>© 2026 Runnity. University final project prototype.</p>
+        <p>Demo data only — no real payments, emails or bookings.</p>
+      </div>
+    </div>
+  </footer>
+ 
+  <script>
+    // ---- Star ratings (supports half stars) ----
+    document.querySelectorAll('.stars').forEach((el) => {
+      const rating = parseFloat(el.dataset.rating);
+      const size = el.dataset.size || 14;
+      el.className += ' inline-flex items-center gap-0.5 align-middle';
+      for (let i = 1; i <= 5; i++) {
+        const fill = Math.max(0, Math.min(1, rating - (i - 1))) * 100;
+        const star = `<svg width="${size}" height="${size}"><use href="#i-star" /></svg>`;
+        el.insertAdjacentHTML(
+          'beforeend',
+          `<span class="relative inline-block" style="width:${size}px;height:${size}px">
+             <span class="absolute inset-0 text-[#e3e1dc]">${star}</span>
+             <span class="absolute inset-y-0 left-0 overflow-hidden text-brand" style="width:${fill}%">${star}</span>
+           </span>`
+        );
+      }
+    });
+ 
+    // ---- Live countdown to the Bogor Morning Run ----
+    const target = new Date('2026-11-14T06:00:00+07:00').getTime();
+    const pad = (n) => String(n).padStart(2, '0');
+    function tick() {
+      let diff = Math.max(0, target - Date.now());
+      const d = Math.floor(diff / 864e5); diff -= d * 864e5;
+      const h = Math.floor(diff / 36e5);  diff -= h * 36e5;
+      const m = Math.floor(diff / 6e4);   diff -= m * 6e4;
+      const s = Math.floor(diff / 1e3);
+      const vals = { d: pad(d), h: pad(h), m: pad(m), s: pad(s) };
+      document.querySelectorAll('[data-cd]').forEach((el) => (el.textContent = vals[el.dataset.cd]));
+    }
+    tick();
+    setInterval(tick, 1000);
+  </script>
+</body>
+</html>

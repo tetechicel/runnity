@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Login — Runnity</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Manrope:wght@700;800&display=swap" rel="stylesheet" />
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: { DEFAULT: '#ff7043', dark: '#f4511e', tint: '#fff1ec', soft: '#ff9a76' },
+            ink: { DEFAULT: '#242424', soft: '#5b5b5b' },
+            paper: '#f8f7f4',
+            line: '#ebe9e4',
+            muted: '#8b8b8b',
+          },
+          fontFamily: {
+            sans: ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+            display: ['Manrope', 'Inter', 'sans-serif'],
+          },
+        },
+      },
+    };
+  </script>
+  <style type="text/tailwindcss">
+    @layer components {
+      .btn-primary { @apply inline-flex h-[52px] w-full items-center justify-center rounded-full bg-brand text-base font-semibold text-white shadow-[0_8px_10px_-4px_rgba(255,112,67,0.7)] transition hover:bg-brand-dark disabled:opacity-60; }
+      .label { @apply mb-2 block text-sm font-medium text-ink; }
+      .input { @apply h-12 w-full rounded-2xl border border-line bg-white pl-11 pr-4 text-sm text-ink outline-none transition placeholder:text-muted focus:border-brand focus:ring-2 focus:ring-brand/30; }
+      .input[aria-invalid="true"] { @apply border-red-400 focus:border-red-400 focus:ring-red-200; }
+      .field-icon { @apply pointer-events-none absolute left-4 top-1/2 size-4 -translate-y-1/2 text-muted; }
+      .field-error { @apply mt-1.5 hidden text-xs font-medium text-red-600; }
+      .notice { @apply flex gap-3 rounded-2xl border border-brand/20 bg-brand-tint px-4 py-3.5 text-sm leading-6 text-brand-dark; }
+    }
+  </style>
+</head>
+
+<body class="bg-paper font-sans text-ink antialiased">
+
+  <!-- SVG sprite -->
+  <svg xmlns="http://www.w3.org/2000/svg" class="hidden" aria-hidden="true">
+    <symbol id="i-logo" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 5c4 0 5 3 5 6s1 5 5 6"/><path d="M5 12h3"/><path d="M16 12h3"/></symbol>
+    <symbol id="i-back" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></symbol>
+    <symbol id="i-user" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></symbol>
+    <symbol id="i-mail" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></symbol>
+    <symbol id="i-lock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></symbol>
+    <symbol id="i-eye" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></symbol>
+    <symbol id="i-eye-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.88 9.88a3 3 0 1 0 4.24 4.24"/><path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68"/><path d="M6.61 6.61A13.526 13.526 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61"/><line x1="2" x2="22" y1="2" y2="22"/></symbol>
+    <symbol id="i-sparkles" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/><path d="M20 3v4"/><path d="M22 5h-4"/></symbol>
+    <symbol id="i-info" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></symbol>
+    <symbol id="i-x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></symbol>
+    <symbol id="i-key" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21 2-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0 3 3L22 7l-3-3m-3.5 3.5L19 4"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></symbol>
+  </svg>
+
+  <div class="grid min-h-screen lg:grid-cols-[656fr_624fr]">
+
+    <!-- ===== Left: photo panel ===== -->
+    <aside class="relative hidden overflow-hidden bg-gradient-to-b from-amber-200 via-orange-300 to-stone-800 lg:block">
+      <img src="assets/img/auth.png" alt="A runner jogging at sunset" class="absolute inset-0 size-full object-cover" onerror="this.style.display='none'" />
+      <div class="absolute inset-0 bg-gradient-to-t from-ink via-ink/60 via-25% to-transparent to-45%"></div>
+
+      <a href="index.html" class="absolute left-10 top-10 flex items-center gap-2.5">
+        <span class="grid size-9 place-items-center rounded-xl bg-brand text-white"><svg class="size-5"><use href="#i-logo" /></svg></span>
+        <span class="font-display text-xl font-extrabold tracking-[-0.025em] text-white">Runnity</span>
+      </a>
+
+      <div class="absolute inset-x-10 bottom-10 max-w-[460px]">
+        <p class="font-display text-[34px] font-bold leading-[45px] tracking-[-0.02em] text-white">“Every finish line starts with showing up.”</p>
+        <p class="mt-4 text-base leading-6 text-white/70">Join 5,000+ runners across Jakarta, Bogor, Bekasi, Bandung and Yogyakarta.</p>
+      </div>
+    </aside>
+
+    <!-- ===== Right: form panel ===== -->
+    <section class="relative flex flex-col px-6 py-8 sm:px-10">
+      <!-- mobile logo -->
+      <a href="index.html" class="mb-6 flex items-center gap-2.5 lg:hidden">
+        <span class="grid size-9 place-items-center rounded-xl bg-brand text-white"><svg class="size-5"><use href="#i-logo" /></svg></span>
+        <span class="font-display text-xl font-extrabold tracking-[-0.025em]">Runnity</span>
+      </a>
+      <a href="index.html" class="absolute right-10 top-8 hidden items-center gap-1.5 text-sm font-medium text-ink/60 transition hover:text-brand lg:inline-flex" ><svg class="size-3.5"><use href="#i-back" /></svg>Back to home</a>
+
+      <div class="flex flex-1 items-center">
+        <div class="mx-auto w-full max-w-[448px]">
+
+          <h1 class="font-display text-4xl font-extrabold leading-[1.1] tracking-[-0.02em]">Welcome back</h1>
+          <p class="mt-3 text-base leading-6 text-muted">Log in to continue your running journey.</p>
+
+          <div id="notice" class="notice mt-8 hidden"><svg class="mt-0.5 size-4 shrink-0"><use href="#i-sparkles" /></svg><span id="notice-text"></span></div>
+          <div id="error" role="alert" class="mt-8 hidden rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700"></div>
+
+          <form id="form" novalidate class="mt-7 space-y-5">
+            <div data-field>
+              <label for="email" class="label">Email Address</label>
+              <div class="relative">
+                <svg class="field-icon"><use href="#i-mail" /></svg>
+                <input id="email" name="email" type="email" placeholder="you@example.com" autocomplete="email" class="input" />
+                
+              </div>
+              <p class="field-error" role="alert"></p>
+            </div>
+            <div data-field>
+              <label for="password" class="label">Password</label>
+              <div class="relative">
+                <svg class="field-icon"><use href="#i-lock" /></svg>
+                <input id="password" name="password" type="password" placeholder="Your password" autocomplete="current-password" class="input pr-12" />
+                <button type="button" data-toggle-password="password" aria-label="Show password" class="absolute right-4 top-1/2 -translate-y-1/2 text-muted transition hover:text-ink"><svg class="size-4"><use href="#i-eye" /></svg></button>
+              </div>
+              <p class="field-error" role="alert"></p>
+            </div>
+            <div class="flex items-center justify-between text-sm">
+              <label class="inline-flex cursor-pointer items-center gap-2 text-ink/80">
+                <input id="remember" type="checkbox" checked class="size-4 cursor-pointer rounded border-line accent-brand" /> Remember me
+              </label>
+              <a href="forgot-password.html" class="font-semibold text-brand transition hover:text-brand-dark">Forgot Password?</a>
+            </div>
+            <button type="submit" class="btn-primary">Login</button>
+          </form>
+
+          <!-- demo accounts -->
+          <div class="mt-5 space-y-3">
+            <div class="rounded-2xl border border-line bg-white p-4">
+              <div class="flex items-center justify-between gap-3">
+                <div class="min-w-0">
+                  <p class="text-sm font-semibold">Demo account</p>
+                  <p class="truncate text-sm text-muted">rizky@runnity.id · runnity123</p>
+                </div>
+                <button type="button" data-demo="rizky@runnity.id|runnity123" class="shrink-0 rounded-full bg-brand-tint px-4 py-2 text-sm font-bold text-brand-dark transition hover:bg-brand/20">Use demo</button>
+              </div>
+              <p class="mt-2 text-xs text-muted">If you reset the demo password, use the new one instead.</p>
+            </div>
+            <div class="flex items-center justify-between gap-3 rounded-2xl border border-brand/20 bg-brand-tint p-4">
+              <div class="min-w-0">
+                <p class="text-sm font-bold text-brand-dark">Admin demo</p>
+                <p class="truncate text-sm text-ink/70">admin@runnity.com · admin123</p>
+              </div>
+              <button type="button" data-demo="admin@runnity.com|admin123" class="shrink-0 px-3 py-2 text-sm font-bold text-brand-dark transition hover:text-brand">Use admin</button>
+            </div>
+          </div>
+
+          <p class="mt-6 text-center text-sm text-ink/60">New to Runnity? <a id="register-link" href="register.html" class="font-bold text-brand transition hover:text-brand-dark">Create an account</a></p>
+
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- toast -->
+  <div id="toast" role="status" class="pointer-events-none fixed right-4 top-4 z-50 hidden w-[calc(100%-2rem)] max-w-[383px] translate-y-[-8px] opacity-0 transition duration-300">
+    <div class="pointer-events-auto flex gap-3 rounded-2xl border border-line bg-white p-4 shadow-[0_20px_40px_-12px_rgba(0,0,0,0.25)]">
+      <span class="grid size-9 shrink-0 place-items-center rounded-full bg-brand-tint text-brand"><svg class="size-4"><use href="#i-info" /></svg></span>
+      <div class="min-w-0 flex-1">
+        <p id="toast-title" class="text-sm font-semibold leading-5"></p>
+        <p id="toast-body" class="mt-0.5 text-sm leading-5 text-muted"></p>
+      </div>
+      <button id="toast-close" type="button" aria-label="Dismiss" class="self-start text-ink/50 transition hover:text-ink"><svg class="size-4"><use href="#i-x" /></svg></button>
+    </div>
+  </div>
+  <script>
+    // ---- shared helpers ----
+    const $ = (s, r = document) => r.querySelector(s);
+    const params = new URLSearchParams(location.search);
+    const next = params.get('next');            // e.g. ?next=event-detail.html
+    const nextLabel = params.get('event') || 'Bogor Morning Run';
+
+    // show / hide password buttons
+    document.querySelectorAll('[data-toggle-password]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const input = document.getElementById(btn.dataset.togglePassword);
+        const show = input.type === 'password';
+        input.type = show ? 'text' : 'password';
+        btn.querySelector('use').setAttribute('href', show ? '#i-eye-off' : '#i-eye');
+        btn.setAttribute('aria-label', show ? 'Hide password' : 'Show password');
+      });
+    });
+
+    const setError = (input, msg) => {
+      const err = input.closest('[data-field]').querySelector('.field-error');
+      input.setAttribute('aria-invalid', msg ? 'true' : 'false');
+      err.textContent = msg || '';
+      err.classList.toggle('hidden', !msg);
+      return !msg;
+    };
+    const emailOk = (v) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
+
+    // tiny demo "database" (browser-only, never leaves this device)
+    const DEMO_USERS = [
+      { name: 'Rizky Pratama', email: 'rizky@runnity.id', password: 'runnity123', role: 'user' },
+      { name: 'Admin', email: 'admin@runnity.com', password: 'admin123', role: 'admin' },
+    ];
+    const loadUsers = () => { try { return JSON.parse(localStorage.getItem('runnity_users') || '[]'); } catch { return []; } };
+    const saveUsers = (u) => { try { localStorage.setItem('runnity_users', JSON.stringify(u)); } catch {} };
+  </script>
+
+  <script>
+    // toast
+    let toastTimer;
+    function toast(title, body) {
+      const t = $('#toast');
+      $('#toast-title').textContent = title; $('#toast-body').textContent = body;
+      t.classList.remove('hidden');
+      requestAnimationFrame(() => t.classList.remove('opacity-0', 'translate-y-[-8px]'));
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(hideToast, 6000);
+    }
+    function hideToast() {
+      const t = $('#toast');
+      t.classList.add('opacity-0', 'translate-y-[-8px]');
+      setTimeout(() => t.classList.add('hidden'), 300);
+    }
+    $('#toast-close').addEventListener('click', hideToast);
+
+    // arrived from a protected action (e.g. "Register Now")
+    if (next) {
+      $('#notice').classList.remove('hidden');
+      $('#notice-text').textContent = 'Log in to register for ' + nextLabel + ". We'll take you straight there.";
+      $('#register-link').href = 'register.html?next=' + encodeURIComponent(next);
+      toast('Please log in to continue', "We'll bring you right back after you sign in.");
+    }
+    if (params.get('registered')) toast('Account created', 'Log in with your new account to continue.');
+
+    // demo buttons
+    document.querySelectorAll('[data-demo]').forEach((b) => b.addEventListener('click', () => {
+      const [em, pw] = b.dataset.demo.split('|');
+      $('#email').value = em; $('#password').value = pw;
+      setError($('#email'), ''); setError($('#password'), '');
+      $('#error').classList.add('hidden');
+    }));
+
+    // submit
+    $('#form').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const email = $('#email'), pw = $('#password'), err = $('#error');
+      err.classList.add('hidden');
+      const ok = [
+        setError(email, !emailOk(email.value.trim()) ? 'Enter a valid email address.' : ''),
+        setError(pw, !pw.value ? 'Enter your password.' : ''),
+      ].every(Boolean);
+      if (!ok) return;
+
+      const addr = email.value.trim().toLowerCase();
+      const user = DEMO_USERS.concat(loadUsers()).find((u) => u.email === addr && u.password === pw.value);
+      if (!user) {
+        err.textContent = 'Email or password is incorrect.';
+        err.classList.remove('hidden');
+        return;
+      }
+      try {
+        (($('#remember').checked) ? localStorage : sessionStorage)
+          .setItem('runnity_session', JSON.stringify({ name: user.name, email: user.email, role: user.role }));
+      } catch {}
+      location.href = next || 'index.html';
+    });
+  </script>
+</body>
+</html>
